@@ -1,0 +1,6 @@
+name = "pentagi"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+[vars]
+PENTAGI_BACKEND = "http://localhost:8080"
