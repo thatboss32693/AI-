@@ -1,6 +1,6 @@
 {
   "name": "pentagi",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "PentAGI AI pentesting orchestration platform",
   "main": "server.js",
   "type": "module",
@@ -8,14 +8,15 @@
     "dev": "NODE_ENV=development node --watch server.js",
     "start": "node server.js",
     "lint": "node --check server.js && node --check src/**/*.js",
-    "test": "node --test"
+    "test": "node --test tests/**/*.test.js"
   },
   "keywords": [
     "pentagi",
     "pentesting",
     "security",
     "ai",
-    "cybersecurity"
+    "cybersecurity",
+    "orchestration"
   ],
   "author": "PentAGI",
   "license": "MIT",

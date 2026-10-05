@@ -1,23 +1,5 @@
-/**
- * Cloudflare Worker entry for PentAGI
- */
-
-const API_KEY = 'replace_with_secure_key';
-const BACKEND_URL = 'http://localhost:8080';
-
-async function forwardRequest(request, path, init = {}) {
-  const url = `${BACKEND_URL}${path}`;
-  return fetch(url, {
-    ...init,
-    headers: {
-      ...(init.headers || {}),
-      Authorization: `Bearer ${API_KEY}`
-    }
-  });
-}
-
 export default {
-  async fetch(request) {
+  async fetch(request, env) {
     const url = new URL(request.url);
     const path = url.pathname;
 
@@ -31,33 +13,41 @@ export default {
       });
     }
 
+    const apiKey = env.PENTAGI_API_KEY || 'development-key';
+    const backend = env.PENTAGI_BACKEND || 'http://localhost:3000';
+
+    const forward = async (targetPath, init = {}) => {
+      return fetch(`${backend}${targetPath}`, {
+        ...init,
+        headers: {
+          ...(init.headers || {}),
+          Authorization: `Bearer ${apiKey}`
+        }
+      });
+    };
+
     try {
       if (path === '/health') {
-        return new Response(JSON.stringify({ status: 'ok' }), {
+        return new Response(JSON.stringify({ status: 'ok', service: 'pentagi-worker' }), {
           headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
         });
       }
 
       if (path === '/api/status' && request.method === 'GET') {
-        const response = await forwardRequest(request, path, { method: 'GET' });
-        return response;
+        return await forward('/api/status', { method: 'GET' });
       }
 
       if (path === '/api/scan' && request.method === 'POST') {
         const body = await request.text();
-        const response = await forwardRequest(request, path, {
+        return await forward('/api/scan', {
           method: 'POST',
           body,
-          headers: {
-            'Content-Type': 'application/json'
-          }
+          headers: { 'Content-Type': 'application/json' }
         });
-        return response;
       }
 
       if (path.startsWith('/api/results/') && request.method === 'GET') {
-        const response = await forwardRequest(request, path, { method: 'GET' });
-        return response;
+        return await forward(path, { method: 'GET' });
       }
 
       return new Response(JSON.stringify({ error: 'Not Found' }), {

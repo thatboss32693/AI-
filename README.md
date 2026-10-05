@@ -1,58 +1,45 @@
 # PentAGI
 
-PentAGI is a lightweight AI pentesting orchestration project template for local deployment and Cloudflare Worker forwarding.
+PentAGI is a formal AI pentesting orchestration platform template designed for Linux servers and Cloudflare Worker entry points.
 
 ## Features
 
-- Express API server
-- JWT-like bearer auth using API key
-- /health, /api/status, /api/scan, /api/results/:scanId routes
-- Cloudflare Worker proxy layer
-- One-click install script for Linux servers
+- Express API server with bearer auth
+- Simulated scan queue and task tracking
+- Scan result storage in memory
+- Dashboard at `/dashboard`
+- Health and status endpoints
+- Cloudflare Worker forwarding layer
+- One-click install script for server deployment
 
-## Quick start
-
-1. Clone the repo
+## Quick Start
 
 ```bash
 git clone https://github.com/thatboss32693/AI-.git
 cd AI-
-```
-
-2. Install dependencies
-
-```bash
 npm install
-```
-
-3. Configure environment
-
-```bash
 cp .env.example .env
+npm start
 ```
 
-Edit `.env`:
+## Environment
 
 ```bash
 PENTAGI_API_KEY=replace_with_secure_key
 PENTAGI_BASE_URL=http://localhost:8080
 NODE_ENV=production
 PORT=3000
+SCAN_TIMEOUT=300
+MAX_CONCURRENT_SCANS=5
 ```
 
-4. Start the server
+## API
 
-```bash
-npm start
-```
-
-5. Check health
+### health check
 
 ```bash
 curl http://localhost:3000/health
 ```
-
-## API example
 
 ### status
 
@@ -60,7 +47,7 @@ curl http://localhost:3000/health
 curl -H "Authorization: Bearer replace_with_secure_key" http://localhost:3000/api/status
 ```
 
-### scan
+### launch scan
 
 ```bash
 curl -X POST http://localhost:3000/api/scan \
@@ -69,13 +56,21 @@ curl -X POST http://localhost:3000/api/scan \
   -d '{"target":"example.com","type":"full"}'
 ```
 
-### result
+### result list
 
 ```bash
-curl -H "Authorization: Bearer replace_with_secure_key" http://localhost:3000/api/results/scan_123
+curl -H "Authorization: Bearer replace_with_secure_key" http://localhost:3000/api/tasks
 ```
 
-## Cloudflare Worker deployment
+## Dashboard
+
+Open:
+
+```text
+http://localhost:3000/dashboard
+```
+
+## Cloudflare Worker
 
 ```bash
 npm install -g wrangler
@@ -83,7 +78,7 @@ wrangler login
 wrangler deploy
 ```
 
-## Project structure
+## Project Structure
 
 ```text
 .
@@ -93,18 +88,20 @@ wrangler deploy
 ├── worker.js
 ├── wrangler.toml
 ├── src/
-│   ├── agent/
-│   │   └── PentAGI.js
 │   ├── config.js
 │   ├── middleware/
 │   │   └── auth.js
 │   ├── routes/
 │   │   └── index.js
+│   ├── services/
+│   │   └── taskStore.js
 │   └── utils/
 │       └── validator.js
-└── .gitignore
+├── .env.example
+├── .gitignore
+└── README.md
 ```
 
 ## Notes
 
-This is a formal project scaffold for deployment and orchestration. It is suitable for a server-based PentAGI-style control plane and a Cloudflare Worker entry layer.
+This version is staged as a production-style pentesting control plane with an operational dashboard, scan queue, and worker-layer proxy. It is suitable as a formal foundation before connecting to real scanners or external security APIs.
