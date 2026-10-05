@@ -1,23 +1,16 @@
 {
   "name": "pentagi",
-  "version": "2.0.0",
-  "description": "PentAGI AI pentesting orchestration platform",
+  "version": "3.0.0",
+  "description": "PentAGI: Real-time pentesting orchestration platform",
   "main": "server.js",
   "type": "module",
   "scripts": {
     "dev": "NODE_ENV=development node --watch server.js",
     "start": "node server.js",
-    "lint": "node --check server.js && node --check src/**/*.js",
-    "test": "node --test tests/**/*.test.js"
+    "test": "node --test tests/**/*.test.js",
+    "install-tools": "bash scripts/install-scanner-tools.sh"
   },
-  "keywords": [
-    "pentagi",
-    "pentesting",
-    "security",
-    "ai",
-    "cybersecurity",
-    "orchestration"
-  ],
+  "keywords": ["pentagi", "pentesting", "security", "nmap", "gobuster", "nuclei"],
   "author": "PentAGI",
   "license": "MIT",
   "dependencies": {
